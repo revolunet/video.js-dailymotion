@@ -433,7 +433,9 @@
 
         case 'timeupdate':
           // Hide the waiting spinner since Dailymotion has its own
-          this.player_.loadingSpinner.hide();
+          if (typeof this.player_.loadingSpinner !== 'undefined') {
+            this.player_.loadingSpinner.hide();
+          }
           break;
         case 'progress':
           break;
@@ -449,7 +451,9 @@
 
     if (error === 100 || error === 101 || error === 150) {
       this.player_.bigPlayButton.hide();
-      this.player_.loadingSpinner.hide();
+      if (typeof this.player_.loadingSpinner !== 'undefined') {
+        this.player_.loadingSpinner.hide();
+      }
       this.player_.posterImage.hide();
     }
   };
