@@ -24,20 +24,18 @@
   videojs.Dailymotion = videojs.MediaTechController.extend({
     /** @constructor */
     init: function (player, options, ready) {
+
       videojs.MediaTechController.call(this, player, options, ready);
 
       this.player_ = player;
       this.playerEl_ = this.player_.el();
 
+      // if dmControls enabled, just use dm native controls
       if (typeof this.player_.options().dmControls !== 'undefined') {
-        var dmC = this.player_.options().dmControls = parseInt(this.player_.options().dmControls) &&
-        this.player_.controls();
-
-        if (dmC && this.player_.controls()) {
-          this.player_.controls(!dmC);
+        if (this.player_.options().dmControls) {
+          this.player_.controls(!this.player_.options().dmControls);
         }
       }
-
 
       // Copy the Javascript options if they exist
       if (typeof options.source !== 'undefined') {
@@ -121,8 +119,8 @@
         autoplay: (this.player_.options().autoplay) ? 1 : 0,
         chromeless: (this.player_.options().dmControls) ? 0 : 1,
         html: 1,
-        info: 1,
-        logo: 1,
+        info: 0,
+        logo: 0,
         controls: 'html',
         wmode: 'opaque',
         format: 'json',
@@ -225,6 +223,7 @@
   };
 
   videojs.Dailymotion.prototype.dispose = function () {
+
     if (this.dmPlayer) {
       this.pause();
       for (var i = 0; i < this.dmPlayer.listeners.length; i++) {
@@ -232,6 +231,10 @@
         this.dmPlayer.removeEventListener(listener.event, listener.func);
       }
       this.dmPlayer = null;
+    }
+
+    if (this.iframeblocker) {
+      this.playerEl_.removeChild(this.iframeblocker);
     }
 
     // Remove the poster
