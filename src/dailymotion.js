@@ -91,17 +91,16 @@
 
       this.id_ = this.player_.id() + '_dailymotion_api';
 
-      this.el_ = videojs.Component.prototype.createEl('iframe', {
+      var iframeAttributes = {
         id: this.id_,
         className: 'vjs-tech',
         scrolling: 'no',
         marginWidth: 0,
         marginHeight: 0,
-        frameBorder: 0,
-        webkitAllowFullScreen: '',
-        mozallowfullscreen: '',
-        allowFullScreen: ''
-      });
+        frameBorder: 0
+      };
+
+      this.el_ = videojs.Component.prototype.createEl('iframe', iframeAttributes);
 
       this.playerEl_.insertBefore(this.el_, this.playerEl_.firstChild);
 
@@ -365,6 +364,15 @@
     if (this.playOnReady) {
       this.dmPlayer.play();
     }
+
+    if (!this.player_.options()['allowfullscreen']) {
+      // for some reason we need to remove fullscreen attributes when ready
+      var iframe = this.playerEl_.querySelector('iframe');
+      iframe.attributes.removeNamedItem('allowfullscreen');
+      iframe.attributes.removeNamedItem('webkitallowfullscreen');
+      iframe.attributes.removeNamedItem('mozallowfullscreen');
+    }
+
   };
 
 
